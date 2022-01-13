@@ -18,10 +18,7 @@ export const lambdaHandler = <T>(
     };
 
     try {
-      const cloudEvent = HTTP.toEvent({
-        headers: req.headers,
-        body: req.body
-      }) as CloudEvent<unknown>;
+      const cloudEvent = HTTP.toEvent(req) as CloudEvent<unknown>;
 
       if (cloudEvent.datacontenttype !== 'application/json') {
         return reply(415, 'Unsupported media type');
