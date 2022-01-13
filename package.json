@@ -41,8 +41,8 @@
     "fastify": "3.25.3"
   },
   "devDependencies": {
-    "@istanbuljs/nyc-config-typescript": "1.0.2",
     "@slavovojacek/eslint-config": "0.0.1",
+    "@slavovojacek/nyc-config": "0.0.1",
     "@slavovojacek/prettier-config": "0.0.2",
     "@slavovojacek/tsconfig": "0.0.5",
     "@types/node": "16.11.19",
@@ -64,8 +64,6 @@
     ]
   },
   "nyc": {
-    "extends": "@istanbuljs/nyc-config-typescript",
-    "all": true,
-    "check-coverage": true
+    "extends": "@slavovojacek/nyc-config"
   }
 }
