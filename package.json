@@ -1,0 +1,63 @@
+{
+  "name": "knative-lambda",
+  "version": "0.0.0",
+  "description": "...",
+  "main": "build/index.js",
+  "types": "build/index.d.ts",
+  "files": [
+    "build"
+  ],
+  "engines": {
+    "node": ">=14",
+    "npm": ">=8"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/slavovojacek/knative-lambda.git"
+  },
+  "keywords": [],
+  "author": {
+    "name": "Slavo Vojacek",
+    "email": "public@slavovojacek.com"
+  },
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/slavovojacek/knative-lambda/issues"
+  },
+  "homepage": "https://github.com/slavovojacek/knative-lambda#readme",
+  "scripts": {
+    "build": "tsc",
+    "format": "prettier --write {.github,lib,test}/** *.{ts,json}",
+    "format:check": "prettier --check {.github,lib,test}/** *.{ts,json}",
+    "lint": "eslint {lib,test}/**/*.ts --fix",
+    "lint:check": "eslint {lib,test}/**/*.ts",
+    "test": "ava"
+  },
+  "dependencies": {
+    "ajv": "8.8.2",
+    "cloudevents": "5.2.0",
+    "env-var": "7.1.1",
+    "fastify": "3.25.3"
+  },
+  "devDependencies": {
+    "@slavovojacek/eslint-config": "0.0.1",
+    "@slavovojacek/prettier-config": "0.0.2",
+    "@slavovojacek/tsconfig": "0.0.5",
+    "@types/node": "16.11.19",
+    "ava": "4.0.1",
+    "ts-node": "10.4.0",
+    "typescript": "4.5.4"
+  },
+  "prettier": "@slavovojacek/prettier-config",
+  "eslintConfig": {
+    "extends": "@slavovojacek/eslint-config"
+  },
+  "ava": {
+    "extensions": [
+      "ts"
+    ],
+    "require": [
+      "ts-node/register"
+    ]
+  }
+}
