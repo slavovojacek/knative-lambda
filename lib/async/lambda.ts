@@ -2,10 +2,10 @@ import Ajv, { type AnySchema, type Options as AjvOptions } from 'ajv';
 import { type CloudEvent, HTTP } from 'cloudevents';
 import { type RouteHandlerMethod } from 'fastify';
 
-import { type AsyncServeHandler, type AsyncServeHandlerEvent } from './serve.types';
+import type * as types from './types';
 
 export const lambdaHandler = <T>(
-  handler: AsyncServeHandler<T>,
+  handler: types.ServeAsyncHandler<T>,
   schema: AnySchema,
   ajvOptions?: AjvOptions
 ): RouteHandlerMethod => {
@@ -41,8 +41,8 @@ export const lambdaHandler = <T>(
 const cloudEventValidator = <T>(schema: AnySchema, ajvOptions?: AjvOptions) => {
   const ajv = new Ajv(ajvOptions);
 
-  return (ce: CloudEvent<unknown>): AsyncServeHandlerEvent<T> => {
-    const isValid = ajv.validate(schema, ce.data);
+  return (cloudEvent: CloudEvent<unknown>): types.ServeAsyncHandlerEvent<T> => {
+    const isValid = ajv.validate(schema, cloudEvent.data);
 
     if (!isValid) {
       const err = new Error('data validation error');
@@ -51,6 +51,6 @@ const cloudEventValidator = <T>(schema: AnySchema, ajvOptions?: AjvOptions) => {
       throw err;
     }
 
-    return ce as AsyncServeHandlerEvent<T>;
+    return cloudEvent as types.ServeAsyncHandlerEvent<T>;
   };
 };

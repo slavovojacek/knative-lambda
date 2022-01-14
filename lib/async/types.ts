@@ -2,16 +2,16 @@ import { type Options as AjvOptions } from 'ajv';
 import { type CloudEvent } from 'cloudevents';
 import { type FastifyServerOptions } from 'fastify';
 
-export type AsyncServeHandlerEvent<T> = CloudEvent<T> & {
+export type ServeAsyncHandlerEvent<T> = CloudEvent<T> & {
   data: T;
 };
 
-export type AsyncServeHandler<T> = (
-  event: AsyncServeHandlerEvent<T>,
+export type ServeAsyncHandler<T> = (
+  event: ServeAsyncHandlerEvent<T>,
   context?: unknown
 ) => void | Promise<void>;
 
-export type AsyncServeOptions = Partial<{
+export type ServeAsyncOptions = Partial<{
   fastify: FastifyServerOptions;
   ajv: AjvOptions;
 }>;

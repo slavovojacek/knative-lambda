@@ -1,13 +1,13 @@
 import { type AnySchema } from 'ajv';
 import fastify from 'fastify';
 
-import { lambdaHandler } from './serve.lambda';
-import { AsyncServeHandler, AsyncServeOptions } from './serve.types';
+import { lambdaHandler } from './lambda';
+import type * as types from './types';
 
-export const build = <T>(
-  handler: AsyncServeHandler<T>,
+export const buildAsync = <T>(
+  handler: types.ServeAsyncHandler<T>,
   schema: AnySchema,
-  options?: AsyncServeOptions
+  options?: types.ServeAsyncOptions
 ) => {
   const app = fastify(options?.fastify);
 

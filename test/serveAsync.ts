@@ -1,10 +1,10 @@
 import test from 'ava';
 import { CloudEvent, HTTP } from 'cloudevents';
 
-import { type AsyncServeHandler } from '../../lib/async/serve.types';
-import { build } from '../../lib/async/serve.app';
+import { buildAsync } from '../lib/async/app';
+import { type ServeAsyncHandler } from '../lib/async/types';
 
-test('validates and consumes valid cloud event', async (t) => {
+test('processes valid cloud event', async (t) => {
   type Schema = { hello: string };
 
   const ce = new CloudEvent<Schema>({
@@ -17,7 +17,7 @@ test('validates and consumes valid cloud event', async (t) => {
 
   t.plan(2);
 
-  const handler: AsyncServeHandler<Schema> = (event) => {
+  const handler: ServeAsyncHandler<Schema> = (event) => {
     t.is(event.data.hello, 'John');
   };
 
@@ -29,7 +29,7 @@ test('validates and consumes valid cloud event', async (t) => {
     required: ['hello']
   };
 
-  const app = build(handler, schema);
+  const app = buildAsync(handler, schema);
 
   const response = await app.inject({
     method: 'POST',
@@ -40,9 +40,9 @@ test('validates and consumes valid cloud event', async (t) => {
   t.is(response.statusCode, 202);
 });
 
-test('validates and rejects cloud event with invalid data', async (t) => {
+test('rejects cloud event with invalid data', async (t) => {
   const invalidCe = new CloudEvent({
-    id: 'bar',
+    id: 'foo',
     source: 'urn:sources:test',
     type: 'urn:events:test-event',
     datacontenttype: 'application/json',
@@ -51,8 +51,8 @@ test('validates and rejects cloud event with invalid data', async (t) => {
 
   t.plan(2);
 
-  const handler: AsyncServeHandler<unknown> = () => {
-    t.fail('should not get invoked');
+  const handler: ServeAsyncHandler<unknown> = () => {
+    t.fail('should not be invoked');
   };
 
   const schema = {
@@ -63,7 +63,7 @@ test('validates and rejects cloud event with invalid data', async (t) => {
     required: ['hello']
   };
 
-  const app = build(handler, schema);
+  const app = buildAsync(handler, schema);
 
   const response = await app.inject({
     method: 'POST',
@@ -85,7 +85,7 @@ test('rejects invalid cloud event', async (t) => {
 
   t.plan(2);
 
-  const handler: AsyncServeHandler<unknown> = () => {
+  const handler: ServeAsyncHandler<unknown> = () => {
     t.fail('should not get invoked');
   };
 
@@ -97,7 +97,7 @@ test('rejects invalid cloud event', async (t) => {
     required: ['hello']
   };
 
-  const app = build(handler, schema);
+  const app = buildAsync(handler, schema);
 
   const response = await app.inject({
     method: 'POST',
@@ -111,4 +111,54 @@ test('rejects invalid cloud event', async (t) => {
     error: 'Unsupported Media Type',
     message: 'Unsupported Media Type: random'
   });
+});
+
+test('rejects invalid request', async (t) => {
+  t.plan(2);
+
+  const handler: ServeAsyncHandler<unknown> = () => {
+    t.fail('should not be invoked');
+  };
+
+  const schema = {};
+
+  const app = buildAsync(handler, schema);
+
+  const response = await app.inject({
+    method: 'POST',
+    url: '/',
+    payload: { foo: 'bar' }
+  });
+
+  t.is(response.statusCode, 400);
+  t.is(response.body, 'Invalid cloud event');
+});
+
+test('rejects on handler failure', async (t) => {
+  const ce = new CloudEvent({
+    id: 'foo',
+    source: 'urn:sources:test',
+    type: 'urn:events:test-event',
+    datacontenttype: 'text/plain',
+    data: 'bar'
+  });
+
+  t.plan(2);
+
+  const handler: ServeAsyncHandler<unknown> = () => {
+    throw new Error('something went wrong');
+  };
+
+  const schema = {};
+
+  const app = buildAsync(handler, schema);
+
+  const response = await app.inject({
+    method: 'POST',
+    url: '/',
+    ...HTTP.binary(ce)
+  });
+
+  t.is(response.statusCode, 500);
+  t.is(response.body, 'Internal failure');
 });
