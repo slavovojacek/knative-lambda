@@ -1,13 +1,26 @@
+import { type AnySchema } from 'ajv';
 import { get } from 'env-var';
 import { type FastifyInstance } from 'fastify';
 
 import { buildSync } from './sync/app';
+import type * as syncTypes from './sync/types';
 import { buildAsync } from './async/app';
+import type * as asyncTypes from './async/types';
 
-export const serveSync = (...params: Parameters<typeof buildSync>) => serve(buildSync, ...params);
+export const serveSync = <
+  EventSchema extends syncTypes.ServeSyncEventSchemaBase,
+  RouteSchema extends syncTypes.ServeSyncRouteSchemaBase
+>(
+  handler: syncTypes.ServeSyncHandler<EventSchema>,
+  schema: RouteSchema,
+  options: syncTypes.ServeSyncOptions
+) => serve(buildSync, handler, schema, options);
 
-export const serveAsync = (...params: Parameters<typeof buildAsync>) =>
-  serve(buildAsync, ...params);
+export const serveAsync = <T>(
+  handler: asyncTypes.ServeAsyncHandler<T>,
+  schema: AnySchema,
+  options?: asyncTypes.ServeAsyncOptions
+) => serve(buildAsync, handler, schema, options);
 
 const serve = <Params extends Array<unknown>>(
   build: (...params: Params) => FastifyInstance,
