@@ -24,10 +24,13 @@ export const lambdaHandler = <T>(
         const event = validateCloudEvent(cloudEvent);
 
         try {
+          req.log.debug('begin handler execution with event: %o', event);
           await handler(event);
           return reply(202);
         } catch (error) {
           return reply(500, 'Internal failure', error);
+        } finally {
+          req.log.debug('end handler execution');
         }
       } catch (error) {
         return reply(400, 'Invalid cloud event data', error);

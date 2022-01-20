@@ -17,11 +17,14 @@ export const lambdaHandler = <
     };
 
     try {
+      req.log.debug('begin handler execution with event: %o', event);
       const { statusCode, headers = {}, body } = await handler(event);
       return res.code(statusCode).headers(headers).send(body);
     } catch (error) {
       req.log.error(error);
       return res.code(500).send('Internal failure');
+    } finally {
+      req.log.debug('end handler execution');
     }
   };
 };
