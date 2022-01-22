@@ -262,7 +262,7 @@ test('rejects with custom http status code and error message', async (t) => {
   type Schema = { Body: never };
 
   const handler: ServeSyncHandler<Schema> = (_event) => {
-    throw new HandlerExecutionError('something went wrong', 'FOO_BAR', {
+    throw new HandlerExecutionError('something went wrong', {
       statusCode: 422,
       text: 'Custom error message'
     });

@@ -30,7 +30,7 @@ export const lambdaHandler = <T>(
           return reply(202);
         } catch (error) {
           if (error instanceof HandlerExecutionError) {
-            return reply(error.http.statusCode, error.http.text, error);
+            return reply(error.detail.statusCode, error.detail.text, error);
           }
           return reply(500, 'Internal failure', error);
         } finally {

@@ -1,25 +1,25 @@
-type HandlerExecutionErrorHttpDetails = Partial<{
+type HandlerExecutionErrorDetail = Partial<{
   statusCode: number;
+  errorCode: string;
   text: string;
 }>;
 
 export class HandlerExecutionError extends Error {
-  readonly code: string;
-  readonly http: Required<HandlerExecutionErrorHttpDetails>;
+  readonly detail: Required<HandlerExecutionErrorDetail>;
 
-  constructor(message: string, code?: string, http?: HandlerExecutionErrorHttpDetails) {
+  constructor(message: string, detail?: HandlerExecutionErrorDetail) {
     super(message);
 
     // Ensure the name of this error is the same as the class name
     this.name = this.constructor.name;
 
     // Custom extensions
-    this.code = code ??= 'INTERNAL_FAILURE';
-    this.http = {
+    this.detail = {
       // Provide sensible defaults
       statusCode: 500,
+      errorCode: 'INTERNAL_FAILURE',
       text: message,
-      ...http
+      ...detail
     };
 
     // Clip the constructor invocation from the stack trace

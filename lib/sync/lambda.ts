@@ -24,7 +24,7 @@ export const lambdaHandler = <
     } catch (error) {
       req.log.error(error);
       if (error instanceof HandlerExecutionError) {
-        return res.code(error.http.statusCode).send(error.http.text);
+        return res.code(error.detail.statusCode).send(error.detail.text);
       }
       return res.code(500).send('Internal failure');
     } finally {
