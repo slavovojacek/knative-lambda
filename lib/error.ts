@@ -18,7 +18,7 @@ export class HandlerExecutionError extends Error {
     this.http = {
       // Provide sensible defaults
       statusCode: 500,
-      text: 'Internal failure',
+      text: message,
       ...http
     };
 
