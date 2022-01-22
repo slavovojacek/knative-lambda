@@ -3,6 +3,7 @@ import { CloudEvent, HTTP } from 'cloudevents';
 
 import { buildAsync } from '../lib/async/app';
 import { type ServeAsyncHandler } from '../lib/async/types';
+import { HandlerExecutionError } from '../lib/error';
 
 test('processes valid cloud event', async (t) => {
   type Schema = { hello: string };
@@ -161,4 +162,36 @@ test('rejects on handler failure', async (t) => {
 
   t.is(response.statusCode, 500);
   t.is(response.body, 'Internal failure');
+});
+
+test('rejects with custom http status code and error message', async (t) => {
+  const ce = new CloudEvent({
+    id: 'foo',
+    source: 'urn:sources:test',
+    type: 'urn:events:test-event',
+    datacontenttype: 'text/plain',
+    data: 'bar'
+  });
+
+  t.plan(2);
+
+  const handler: ServeAsyncHandler<unknown> = () => {
+    throw new HandlerExecutionError('something went wrong', 'FOO_BAR', {
+      statusCode: 422,
+      text: 'Custom error message'
+    });
+  };
+
+  const schema = {};
+
+  const app = buildAsync(handler, schema);
+
+  const response = await app.inject({
+    method: 'POST',
+    url: '/',
+    ...HTTP.binary(ce)
+  });
+
+  t.is(response.statusCode, 422);
+  t.is(response.body, 'Custom error message');
 });

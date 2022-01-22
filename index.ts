@@ -12,3 +12,5 @@ export type {
   ServeSyncHandlerResponse,
   ServeSyncOptions
 } from './lib/sync/types';
+
+export { HandlerExecutionError } from './lib/error';

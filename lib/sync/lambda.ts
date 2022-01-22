@@ -1,5 +1,6 @@
 import { type RawServerBase } from 'fastify';
 
+import { HandlerExecutionError } from '../error';
 import type * as types from './types';
 
 export const lambdaHandler = <
@@ -22,6 +23,9 @@ export const lambdaHandler = <
       return res.code(statusCode).headers(headers).send(body);
     } catch (error) {
       req.log.error(error);
+      if (error instanceof HandlerExecutionError) {
+        return res.code(error.http.statusCode).send(error.http.text);
+      }
       return res.code(500).send('Internal failure');
     } finally {
       req.log.debug('end handler execution');

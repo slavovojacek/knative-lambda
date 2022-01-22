@@ -2,6 +2,7 @@ import Ajv, { type AnySchema, type Options as AjvOptions } from 'ajv';
 import { type CloudEvent, HTTP } from 'cloudevents';
 import { type RouteHandlerMethod } from 'fastify';
 
+import { HandlerExecutionError } from '../error';
 import type * as types from './types';
 
 export const lambdaHandler = <T>(
@@ -28,6 +29,9 @@ export const lambdaHandler = <T>(
           await handler(event);
           return reply(202);
         } catch (error) {
+          if (error instanceof HandlerExecutionError) {
+            return reply(error.http.statusCode, error.http.text, error);
+          }
           return reply(500, 'Internal failure', error);
         } finally {
           req.log.debug('end handler execution');

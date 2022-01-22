@@ -2,6 +2,7 @@ import test from 'ava';
 
 import { buildSync } from '../lib/sync/app';
 import { type ServeSyncHandler } from '../lib/sync/types';
+import { HandlerExecutionError } from '../lib/error';
 
 test('runs handler with validated body', async (t) => {
   t.plan(2);
@@ -234,7 +235,7 @@ test('handler rejects on schema mismatch', async (t) => {
   });
 });
 
-test('handler rejects on internal failure', async (t) => {
+test('rejects on handler failure', async (t) => {
   const schema = {};
 
   type Schema = { Body: never };
@@ -253,4 +254,28 @@ test('handler rejects on internal failure', async (t) => {
 
   t.is(response.statusCode, 500);
   t.is(response.body, 'Internal failure');
+});
+
+test('rejects with custom http status code and error message', async (t) => {
+  const schema = {};
+
+  type Schema = { Body: never };
+
+  const handler: ServeSyncHandler<Schema> = (_event) => {
+    throw new HandlerExecutionError('something went wrong', 'FOO_BAR', {
+      statusCode: 422,
+      text: 'Custom error message'
+    });
+  };
+
+  const options = { method: 'POST', url: '/' } as const;
+  const app = buildSync(handler, schema, options);
+
+  const response = await app.inject({
+    ...options,
+    payload: { foo: 'bar' }
+  });
+
+  t.is(response.statusCode, 422);
+  t.is(response.body, 'Custom error message');
 });
