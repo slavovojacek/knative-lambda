@@ -1,9 +1,9 @@
 {
   "extends": "@slavovojacek/tsconfig",
   "compilerOptions": {
-    "exactOptionalPropertyTypes": false,
-    "inlineSourceMap": true,
+    "sourceMap": true,
     "inlineSources": true,
+    "exactOptionalPropertyTypes": false,
     "outDir": "./build"
   },
   "include": ["lib", "index.ts"]

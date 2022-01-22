@@ -1,7 +1,7 @@
 {
   "name": "knative-lambda",
   "version": "0.0.6",
-  "description": "Lambda interfaces for Knative",
+  "description": "Lambda interfaces for Knative serving and eventing",
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "files": [
@@ -27,18 +27,24 @@
   "homepage": "https://github.com/slavovojacek/knative-lambda#readme",
   "scripts": {
     "build": "tsc",
-    "format": "prettier --write {.github,lib,test}/** *.{ts,json}",
-    "format:check": "prettier --check {.github,lib,test}/** *.{ts,json}",
-    "lint": "eslint {lib,test}/**/*.ts --fix",
-    "lint:check": "eslint {lib,test}/**/*.ts",
+    "format": "prettier --write '{.github,lib,test}/**' '*.{ts,json}'",
+    "format:check": "prettier --check '{.github,lib,test}/**' '*.{ts,json}'",
+    "lint": "eslint '{lib,test}/**/*.ts' --fix",
+    "lint:check": "eslint '{lib,test}/**/*.ts'",
     "test": "ava",
     "test:coverage": "nyc ava"
   },
+  "peerDependencies": {
+    "ajv": "8.x",
+    "cloudevents": "5.x",
+    "env-var": "7.x",
+    "fastify": "3.x"
+  },
   "dependencies": {
-    "ajv": "8.8.2",
-    "cloudevents": "5.2.0",
-    "env-var": "7.1.1",
-    "fastify": "3.25.3"
+    "ajv": "8.x",
+    "cloudevents": "5.x",
+    "env-var": "7.x",
+    "fastify": "3.x"
   },
   "devDependencies": {
     "@slavovojacek/eslint-config": "0.0.1",
