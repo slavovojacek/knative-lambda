@@ -14,3 +14,5 @@ export type {
 } from './lib/sync/types';
 
 export { HandlerExecutionError } from './lib/error';
+
+export { traceStore } from './lib/tracing';
