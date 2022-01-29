@@ -20,6 +20,7 @@ export type Event = { hello: string };
 
 ```ts
 // handler.ts
+
 import { type ServeAsyncHandler } from 'knative-lambda';
 
 import type * as schema from './schema';
