@@ -14,7 +14,7 @@ export const buildAsync = <T>(
   app.route({
     method: 'POST',
     url: '/',
-    handler: lambdaHandler(handler, schema, options?.ajv)
+    handler: lambdaHandler(handler, schema, options)
   });
 
   return app;

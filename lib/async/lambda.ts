@@ -8,9 +8,9 @@ import type * as types from './types';
 export const lambdaHandler = <T>(
   handler: types.ServeAsyncHandler<T>,
   schema: AnySchema,
-  ajvOptions?: AjvOptions
+  options?: types.ServeAsyncOptions
 ): RouteHandlerMethod => {
-  const validateCloudEvent = cloudEventValidator<T>(schema, ajvOptions);
+  const validateCloudEvent = cloudEventValidator<T>(schema, options?.ajv);
 
   return async (req, res) => {
     const reply = (status: number, message?: string, error?: unknown) => {
