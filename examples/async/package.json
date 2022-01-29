@@ -11,7 +11,7 @@
   "devDependencies": {
     "@slavovojacek/tsconfig": "0.0.x",
     "@types/node": "16.x",
-    "esbuild": "0.14.14",
+    "esbuild": "0.14.x",
     "typescript": "4.5.x"
   }
 }
