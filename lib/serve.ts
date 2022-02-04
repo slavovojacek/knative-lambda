@@ -7,33 +7,41 @@ import type * as syncTypes from './sync/types';
 import { buildAsync } from './async/app';
 import type * as asyncTypes from './async/types';
 
-export const serveSync = <
+export const serveSync = async <
   EventSchema extends syncTypes.ServeSyncEventSchemaBase,
   RouteSchema extends syncTypes.ServeSyncRouteSchemaBase
 >(
   handler: syncTypes.ServeSyncHandler<EventSchema>,
   schema: RouteSchema,
   options: syncTypes.ServeSyncOptions
-) => serve(buildSync, handler, schema, options);
+) => {
+  const server = buildSync(handler, schema, options);
+  return await serve(server, options);
+};
 
-export const serveAsync = <T>(
+export const serveAsync = async <T>(
   handler: asyncTypes.ServeAsyncHandler<T>,
   schema: AnySchema,
   options?: asyncTypes.ServeAsyncOptions
-) => serve(buildAsync, handler, schema, options);
-
-const serve = <Params extends Array<unknown>>(
-  build: (...params: Params) => FastifyInstance,
-  ...params: Params
 ) => {
-  const port = get('PORT').required().asInt();
+  const server = buildAsync(handler, schema, options);
+  return await serve(server, options);
+};
 
-  const server = build(...params);
+const serve = async (
+  server: FastifyInstance,
+  options?: syncTypes.ServeSyncOptions | asyncTypes.ServeAsyncOptions
+) => {
+  const port = options?.port ?? get('PORT').required().asInt();
 
   const start = async () => {
-    server.log.info('starting server');
-
     try {
+      if (options?.onStart) {
+        server.log.info('performing prerequisite setup');
+        await options.onStart();
+      }
+
+      server.log.info('starting server');
       await server.listen(port);
     } catch (error) {
       server.log.error(error);
@@ -42,10 +50,15 @@ const serve = <Params extends Array<unknown>>(
   };
 
   const stop = async () => {
-    server.log.info('stopping server');
-
     try {
+      server.log.info('stopping server');
       await server.close();
+
+      if (options?.onStop) {
+        server.log.info('performing cleanup');
+        await options.onStop();
+      }
+
       process.exit(0);
     } catch (error) {
       server.log.error(error);
@@ -57,5 +70,7 @@ const serve = <Params extends Array<unknown>>(
     process.once(signal, stop);
   });
 
-  start();
+  await start();
+
+  return stop;
 };

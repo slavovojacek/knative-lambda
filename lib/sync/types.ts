@@ -50,4 +50,7 @@ export type ServeSyncOptions = {
   fastify?: fastify.FastifyServerOptions;
   method: fastify.HTTPMethods;
   url: string;
+  port?: number;
+  onStart?: () => void | Promise<void>;
+  onStop?: () => void | Promise<void>;
 };

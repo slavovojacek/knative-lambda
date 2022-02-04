@@ -11,7 +11,10 @@ export type ServeAsyncHandler<T> = (
   context?: unknown
 ) => void | Promise<void>;
 
-export type ServeAsyncOptions = Partial<{
-  fastify: FastifyServerOptions;
-  ajv: AjvOptions;
-}>;
+export type ServeAsyncOptions = {
+  fastify?: FastifyServerOptions;
+  ajv?: AjvOptions;
+  port?: number;
+  onStart?: () => void | Promise<void>;
+  onStop?: () => void | Promise<void>;
+};
