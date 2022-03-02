@@ -1,6 +1,6 @@
 {
   "name": "knative-lambda",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "description": "Lambda interfaces for Knative serving and eventing",
   "type": "commonjs",
   "main": "build/index.js",
