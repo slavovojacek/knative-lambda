@@ -1,4 +1,5 @@
 import fastify from 'fastify';
+import cors from 'fastify-cors';
 
 import { lambdaHandler } from './lambda';
 import type * as types from './types';
@@ -12,6 +13,10 @@ export const buildSync = <
   options: types.ServeSyncOptions
 ) => {
   const app = fastify(options.fastify);
+
+  if (options.cors) {
+    app.register(cors, options.cors);
+  }
 
   app.route({
     method: options.method,

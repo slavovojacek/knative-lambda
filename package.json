@@ -45,7 +45,8 @@
     "ajv": "8.x",
     "cloudevents": "5.x",
     "env-var": "7.x",
-    "fastify": "3.x"
+    "fastify": "3.x",
+    "fastify-cors": "6.0.3"
   },
   "devDependencies": {
     "@slavovojacek/eslint-config": "0.0.x",

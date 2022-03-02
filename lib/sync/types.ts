@@ -1,5 +1,6 @@
 import { type AnySchema } from 'ajv';
 import type * as fastify from 'fastify';
+import { type FastifyCorsOptions } from 'fastify-cors';
 import { type OutgoingHttpHeaders } from 'http';
 
 export type ServeSyncEventSchemaBase = Partial<{
@@ -53,4 +54,5 @@ export type ServeSyncOptions = {
   port?: number;
   onStart?: () => void | Promise<void>;
   onStop?: () => void | Promise<void>;
+  cors?: FastifyCorsOptions;
 };
